@@ -5,9 +5,9 @@ exports.get = async (req, res) => {
     const contract = new ValidationContract();
 
     let data = await repository.get();
-    
+
     contract.hasMinLen(data, 1, "Jogo não encontrado.");
-    
+
     if (!contract.isValid()) {
         res.status(400).send(contract.errors()).end();
         return;
@@ -54,6 +54,25 @@ exports.post = async (req, res) => {
 };
 
 exports.put = async (req, res, next) => {
+    const contract = new ValidationContract();
+
+    contract.hasMinLen(
+        req.body.jogo,
+        3,
+        "O nome do jogo deve ter pelo menos 3 caracteres"
+    );
+
+    contract.hasMinLen(
+        req.body.link,
+        6,
+        "O link deve ter no mínimo 6 caractere"
+    );
+
+    if (!contract.isValid()) {
+        res.status(400).send(contract.errors()).end();
+        return;
+    }
+
     try {
         await repository.update(req.params.id, req.body);
         res.status(200).send({
