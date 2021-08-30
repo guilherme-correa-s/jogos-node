@@ -73,6 +73,11 @@ exports.put = async (req, res, next) => {
         return;
     }
 
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status(422).send({ error: "Id inválido" });
+        return;
+    }
+
     try {
         await repository.update(req.params.id, req.body);
         res.status(200).send({
